@@ -1,0 +1,77 @@
+#myTabContent {
+    padding-top: 10px;
+    background-color: skyblue;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.refineSearch {
+    padding: 5px;
+    border:1px solid skyblue;
+}
+
+label {
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+#searchButton {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.highlighted {
+    color: orangered;
+}
+
+.row {
+    margin-right: 0px;
+}
+
+.welcome {
+    text-align: center;
+    padding: 40px;
+}
+
+.details {
+    border:2px solid;
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.tile1 {
+    margin-top: 10px;
+    padding-left: 5px;
+    border:1px solid;  
+}
+
+#price {
+    color: green
+}
+
+.book_ticket {
+    padding-top: 90px;
+    padding-right: 33.33%;
+}
+
+/*---------------------Media Queries------------------------*/
+
+@media (max-width: 576px) {
+.container {
+    max-width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .offset-4 {
+    margin-left: 10%;
+    }
+
+    #bookButton {
+    padding-right: 1px;
+    padding-left: 1px;
+    margin-right: 0px;
+    }
+}

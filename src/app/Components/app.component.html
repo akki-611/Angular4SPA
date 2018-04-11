@@ -1,0 +1,173 @@
+<section class="container">
+  <!-- Heading for the page -->
+  <h2>Flight Search Engine</h2>
+  <section class="row">
+    <section class="col-4">
+      <div class="row">
+        <!-- tabs containing options for one-way or return flights -->
+        <div class="col-12" id="inputContainer">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="oneWay-tab" data-toggle="tab" href="#oneWay" role="tab" aria-controls="home" aria-selected="true">One-way</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="twoWay-tab" data-toggle="tab" href="#twoWay" role="tab" aria-controls="profile" aria-selected="false">Return</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <!-- view for one way flights -->
+            <div class="tab-pane fade show active" id="oneWay" role="tabpanel" aria-labelledby="oneWay-tab">
+              <form class="form-group">
+                <label for="origin">Origin : </label>
+                <input [(ngModel)]="origin" type="text" placeholder="Enter origin city" name="origin" class="form-control" required />
+                <label for="destination">Destination : </label>
+                <input type="text" [(ngModel)]="destination" placeholder="Enter destination city" name="destination" class="form-control"
+                  required />
+                <label for="originDate">Select Departure date : </label>
+                <input type="date" [(ngModel)]="originDate" placeholder="Select departure date" name="originDate" class="form-control" required
+                />
+                <button class="btn btn-success" (click)="setOneWayView()" type="submit" id="searchButton">Submit</button>
+                <br /><br />
+              </form>
+            </div>
+            <!-- view for two way flights -->
+            <div class="tab-pane fade" id="twoWay" role="tabpanel" aria-labelledby="twoWay-tab">
+              <form class="form-group">
+                <label for="origin">Origin : </label>
+                <input [(ngModel)]="origin" type="text" placeholder="Enter origin city" required name="origin" class="form-control" />
+                <label for="destination">Destination : </label>
+                <input type="text" [(ngModel)]="destination" placeholder="Enter destination city" required name="destination" class="form-control"
+                />
+                <label for="originDate">Select Departure date : </label>
+                <input type="date" [(ngModel)]="originDate" required name="originDate" class="form-control" />
+                <label for="returnDate">Select Return date : </label>
+                <input type="date" [(ngModel)]="returnDate" required name="returnDate" class="form-control" />
+                <button class="btn btn-success" (click)="setTwoWayView()" type="submit" id="searchButton">Submit</button>
+                <br /><br />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- view for selecting price to refine the search results-->
+        <div class="col-12">
+          <div class="refineSearch">
+            <h3>Refine flight search</h3>
+            <input type="range" name="points" min="1000" max="7500" step="500" [(ngModel)]="value">
+            <br />
+            <p>Price upto: {{value}}</p>
+            <button type="submit" class="btn btn-success" [disabled]="welcome" (click)="applyFilter()">Apply Filter</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="col-8">
+      <!-- Initial view on page start-up -->
+      <div *ngIf="welcome" class="welcome">
+        <h1>Welcome to FlightFirst.com</h1>
+        <br /><br />
+        <h3>
+          Cities Available (to-and-fro): <section class="highlighted">Jaipur, Bangalore, Delhi</section>
+          <br /><br />
+          Dates Available: <section class="highlighted">16 to 22 April 2018</section>
+        </h3>
+      </div>
+      <!-- displaying results for one way flights --> 
+      <div *ngIf="oneWay">
+        <div class="details">
+          <div class="row">
+            <section class="col-8">
+              <h3> {{oneWayFlights[0].origin}} > {{oneWayFlights[0].destination}} </h3>
+            </section>
+            <section class="col-4">
+              <p><strong>Depart</strong>: {{originDate|date:"dd MMMM yyyy"}}</p>
+            </section>
+          </div>
+        </div>
+        <div *ngFor="let flight of oneWayFlights" class="tile1">
+          <div class="row">
+            <div class="col-12" id="price">
+              <h3>Rs. {{flight.price}}</h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <h5>{{flight.flightCode}}</h5>
+              <h4>{{flight.originCode}} > {{flight.destinationCode}}</h4>
+              <h4>Depart: {{flight.departTime}}</h4>
+              <h4>Arrival: {{flight.arriveTime}}</h4>
+            </div>
+            <div class="offset-4 col-4">
+              <div class="book_ticket">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#bookModal">Book Ticket</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- displaying results for two way flights -->
+      <div *ngIf="twoWay">
+        <div class="details">
+          <div class="row">
+            <section class="col-8">
+              <h3>{{returnFlights[0].oneWayFlight.origin}} > {{returnFlights[0].oneWayFlight.destination}} > {{returnFlights[0].oneWayFlight.origin}}</h3>
+            </section>
+            <section class="col-4">
+              <p><strong>Depart</strong>: {{originDate|date:"dd MMMM yyyy"}}</p>
+              <p><strong>Return</strong>: {{returnDate|date:"dd MMMM yyyy"}}</p>
+            </section>
+          </div>
+        </div>
+        <div *ngFor="let flight of returnFlights" class="tile1">
+          <div class="row">
+            <div class="col-12" id="price">
+              <h3>Rs. {{flight.oneWayFlight.price + flight.twoWayFlight.price}}</h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <h5>{{flight.oneWayFlight.flightCode}}</h5>
+              <h4>{{flight.oneWayFlight.originCode}} > {{flight.oneWayFlight.destinationCode}}</h4>
+              <h4>Depart: {{flight.oneWayFlight.departTime}}</h4>
+              <h4>Arrival: {{flight.oneWayFlight.arriveTime}}</h4>
+            </div>
+            <div class="col-4">
+              <div class="returnFlightTile">
+                <h5>{{flight.twoWayFlight.flightCode}}</h5>
+                <h4>{{flight.twoWayFlight.originCode}} > {{flight.twoWayFlight.destinationCode}}</h4>
+                <h4>Depart: {{flight.twoWayFlight.departTime}}</h4>
+                <h4>Arrival: {{flight.twoWayFlight.arriveTime}}</h4>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="book_ticket">
+                <button class="btn btn-primary" id="bookButton" data-toggle="modal" data-target="#bookModal">Book Ticket</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- displaying modal when trying to book flight ticket -->
+    <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="bookModalLabel">Flight ticket</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to book this ticket?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Proceed to payment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
